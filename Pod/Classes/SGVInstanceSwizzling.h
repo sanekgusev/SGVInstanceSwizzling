@@ -24,4 +24,6 @@ typedef __nonnull id(^SGVInstanceSwizzlingConfigurationBlock)(__nonnull id super
 + (BOOL)undoMethodOverrideForObject:(nonnull id)object
                       withUndoToken:(nonnull id)undoToken;
 
++ (BOOL)undoAllMethodOverridesForObject:(nonnull id)object;
+
 @end

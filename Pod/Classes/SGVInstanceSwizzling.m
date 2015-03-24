@@ -9,6 +9,7 @@
 #import "SGVInstanceSwizzling.h"
 #import "SGVInstanceSwizzlingUndoToken.h"
 @import ObjectiveC.runtime;
+#import "SGVSuperMessagingProxy.h"
 
 static const void * const kOverrideIsActiveKey = &kOverrideIsActiveKey;
 static const void * const kUndoTokenKey = &kUndoTokenKey;
@@ -54,6 +55,7 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
     SGVInstanceSwizzlingMethodDescriptor *methodDescriptor =
         [self originalMethodDescriptorForAddingMethodWithSelector:selector
                                                           toClass:subclass
+                                                        forObject:object
                                            withConfigurationBlock:configurationBlock];
     if (!methodDescriptor) {
         objc_disposeClassPair(subclass);
@@ -66,6 +68,7 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
         SGVInstanceSwizzlingMethodDescriptor *classMethodDescriptor =
         [self originalMethodDescriptorForAddingMethodWithSelector:@selector(class)
                                                           toClass:subclass
+                                                        forObject:object
                                            withConfigurationBlock:^id(id _super) {
                                                return ^Class(id _self) {
                                                    return objectClass;
@@ -157,6 +160,10 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
     return NO;
 }
 
++ (BOOL)undoAllMethodOverridesForObject:(nonnull id)object {
+    // TODO: implement
+}
+
 #pragma mark - Private
 
 + (NSString *)subclassNameForObject:(id)object andSelector:(SEL)selector {
@@ -192,7 +199,8 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
 
 + (SGVInstanceSwizzlingMethodDescriptor *)originalMethodDescriptorForAddingMethodWithSelector:(SEL)selector
                                                                                       toClass:(Class __unsafe_unretained)class
-                                                                       withConfigurationBlock:(nonnull SGVInstanceSwizzlingConfigurationBlock)configurationBlock {
+                                                                                    forObject:(id)object
+                                                                       withConfigurationBlock:(SGVInstanceSwizzlingConfigurationBlock)configurationBlock {
     NSCParameterAssert(selector);
     NSCParameterAssert(class);
     NSCParameterAssert(configurationBlock);
@@ -213,7 +221,7 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
         return nil;
     }
     
-    id block = configurationBlock(nil); // FIXME: pass super proxy instance
+    id block = configurationBlock([SGVSuperMessagingProxy proxyWithObject:object]);
     NSCAssert(block, @"Block should not be nil");
     NSCAssert([self isBlock:block], @"returned value is not a block");
     
@@ -223,6 +231,7 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
                                      implementation,
                                      typeEncoding);
     
+    NSCAssert(addResult, @"Method should be added successfully");
     if (!addResult) {
         return nil;
     }

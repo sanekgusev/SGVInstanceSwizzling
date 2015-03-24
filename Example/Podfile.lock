@@ -1,0 +1,19 @@
+PODS:
+  - SGVInstanceSwizzling (1.0.0):
+    - SGVSuperMessagingProxy (~> 1.0)
+  - SGVSuperMessagingProxy (1.0.0):
+    - SGVSuperMessagingProxy/Core (= 1.0.0)
+  - SGVSuperMessagingProxy/Core (1.0.0)
+
+DEPENDENCIES:
+  - SGVInstanceSwizzling (from `../`)
+
+EXTERNAL SOURCES:
+  SGVInstanceSwizzling:
+    :path: ../
+
+SPEC CHECKSUMS:
+  SGVInstanceSwizzling: 5fd7991b7df767d5cb4276564dadbaf12eeddfa0
+  SGVSuperMessagingProxy: e87376529764d3fc8bffb2d60f6be78385cf93b6
+
+COCOAPODS: 0.36.0
