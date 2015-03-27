@@ -10,6 +10,7 @@
 #import "SGVInstanceSwizzlingUndoToken.h"
 @import ObjectiveC.runtime;
 #import "SGVSuperMessagingProxy.h"
+#import "SGVInstranceSwizzlingDeallocObserver.h"
 
 static const void * const kOverrideIsActiveKey = &kOverrideIsActiveKey;
 static const void * const kUndoTokenKey = &kUndoTokenKey;
@@ -98,6 +99,12 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
                              undoToken,
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     
+    SGVInstranceSwizzlingDeallocObserver * __unused deallocObserver =
+        [[SGVInstranceSwizzlingDeallocObserver alloc] initWithObject:object
+                                                        deallocBlock:^(__nonnull id object) {
+                                                            [self undoAllMethodOverridesForObject:object];
+                                                        }];
+    
     return undoToken;
 }
 
@@ -120,48 +127,31 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
         return NO;
     }
     
-    Class __unsafe_unretained originalSuperclass = class_getSuperclass(token.objectClass);
+    [self undoMethodOverridesWithToken:token];
     
-    [token.overriddenMethodDescriptors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-        SGVInstanceSwizzlingMethodDescriptor *methodDescriptor = obj;
-        Method originalSuperclassMethod = methodDescriptor.originalMethod;
-        Method overriddenMethod = class_getInstanceMethod(token.objectClass, method_getName(originalSuperclassMethod));
-        
-        // TODO: try using dynamic message dispatch to superclass implementation here
-        IMP overriddenImplementation = method_setImplementation(overriddenMethod,
-                                                                method_getImplementation(originalSuperclassMethod));
-        BOOL removeBlockResult = imp_removeBlock(overriddenImplementation);
-        NSCAssert(removeBlockResult, @"block should be removed successfully");
-    }];
+    [self undoDynamicSubclassingForObject:object];
     
-    objc_setAssociatedObject(token.objectClass,
-                             kUndoTokenKey,
-                             nil,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    objc_setAssociatedObject(token.objectClass,
-                             kOverrideIsActiveKey,
-                             @NO,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-    
-    if (object_getClass(object) == token.objectClass) {
-        object_setClass(object, originalSuperclass);
-        objc_disposeClassPair(token.objectClass);
-        
-        Class __unsafe_unretained currentObjectClass = originalSuperclass;
-        NSNumber *overrideIsActiveNumber = objc_getAssociatedObject(currentObjectClass, kOverrideIsActiveKey);
-        while (overrideIsActiveNumber && !overrideIsActiveNumber.boolValue) {
-            object_setClass(object, class_getSuperclass(currentObjectClass));
-            objc_disposeClassPair(currentObjectClass);
-            currentObjectClass = class_getSuperclass(currentObjectClass);
-            overrideIsActiveNumber = objc_getAssociatedObject(currentObjectClass, kOverrideIsActiveKey);
-        }
-    }
-    
-    return NO;
+    return YES;
 }
 
 + (BOOL)undoAllMethodOverridesForObject:(nonnull id)object {
-    // TODO: implement
+    NSCParameterAssert(object);
+    if (!object) {
+        return NO;
+    }
+    
+    Class __unsafe_unretained objectClass = object_getClass(object);
+    while (objectClass) {
+        SGVInstanceSwizzlingUndoToken *undoToken = objc_getAssociatedObject(objectClass, kUndoTokenKey);
+        if (undoToken) {
+            [self undoMethodOverridesWithToken:undoToken];
+        }
+        objectClass = class_getSuperclass(objectClass);
+    }
+    
+    [self undoDynamicSubclassingForObject:object];
+    
+    return YES;
 }
 
 #pragma mark - Private
@@ -224,6 +214,9 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
     id block = configurationBlock([SGVSuperMessagingProxy proxyWithObject:object]);
     NSCAssert(block, @"Block should not be nil");
     NSCAssert([self isBlock:block], @"returned value is not a block");
+    if (![self isBlock:block]) {
+        return nil;
+    }
     
     IMP implementation = imp_implementationWithBlock(block);
     BOOL addResult = class_addMethod(class,
@@ -237,6 +230,58 @@ static const void * const kUndoTokenKey = &kUndoTokenKey;
     }
 
     return [[SGVInstanceSwizzlingMethodDescriptor alloc] initWithOriginalMethod:existingMethod];
+}
+
++ (void)undoMethodOverridesWithToken:(SGVInstanceSwizzlingUndoToken *)token {
+    NSCParameterAssert(token);
+    if (!token) {
+        return;
+    }
+    [token.overriddenMethodDescriptors enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+        SGVInstanceSwizzlingMethodDescriptor *methodDescriptor = obj;
+        Method originalSuperclassMethod = methodDescriptor.originalMethod;
+        Method overriddenMethod = class_getInstanceMethod(token.objectClass,
+                                                          method_getName(originalSuperclassMethod));
+        
+        // TODO: try using dynamic message dispatch to superclass implementation here
+        IMP overriddenImplementation = method_setImplementation(overriddenMethod,
+                                                                method_getImplementation(originalSuperclassMethod));
+        BOOL removeBlockResult = imp_removeBlock(overriddenImplementation);
+        NSCAssert(removeBlockResult, @"block should be removed successfully");
+    }];
+    
+    objc_setAssociatedObject(token.objectClass,
+                             kUndoTokenKey,
+                             nil,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(token.objectClass,
+                             kOverrideIsActiveKey,
+                             @NO,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
++ (void)undoDynamicSubclassingForObject:(id)object {
+    NSCParameterAssert(object);
+    if (!object) {
+        return;
+    }
+    
+    Class __unsafe_unretained objectClass = object_getClass(object);
+    NSNumber *overrideIsActiveNumber = objc_getAssociatedObject(objectClass, kOverrideIsActiveKey);
+    
+    while (overrideIsActiveNumber && !overrideIsActiveNumber.boolValue) {
+        Class __unsafe_unretained originalSuperclass = class_getSuperclass(objectClass);
+        
+        objc_setAssociatedObject(objectClass,
+                                 kOverrideIsActiveKey,
+                                 nil,
+                                 OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+        object_setClass(object, originalSuperclass);
+        objc_disposeClassPair(objectClass);
+        
+        objectClass = originalSuperclass;
+        overrideIsActiveNumber = objc_getAssociatedObject(objectClass, kOverrideIsActiveKey);
+    }
 }
 
 @end
