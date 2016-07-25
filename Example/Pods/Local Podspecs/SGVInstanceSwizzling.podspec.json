@@ -1,0 +1,56 @@
+{
+  "name": "SGVInstanceSwizzling",
+  "version": "1.0.0",
+  "cocoapods_version": ">= 1.0.0",
+  "summary": "Override dynamically-dispatched methods on any Objective-C or Swift object with access to original implementation.",
+  "description": "An optional longer description of SGVInstanceSwizzling\n\n* Markdown format.\n* Don't worry about the indent, we strip it!",
+  "homepage": "https://github.com/sanekgusev/SGVInstanceSwizzling",
+  "license": "MIT",
+  "authors": {
+    "Aleksandr Gusev": "sanekgusev@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/sanekgusev/SGVInstanceSwizzling.git",
+    "tag": "1.0.0"
+  },
+  "social_media_url": "https://twitter.com/sanekgusev",
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.9",
+    "watchos": "2.0",
+    "tvos": "9.0"
+  },
+  "subspecs": [
+    {
+      "name": "Objective-C",
+      "source_files": "Pod/Sources/Objective-C/**/*.{h,m}",
+      "public_header_files": "Pod/Sources/Objective-C/SGVInstanceSwizzling.h",
+      "dependencies": {
+        "SGVSuperMessagingProxy/Objective-C": [
+          "~> 2.0"
+        ]
+      },
+      "platforms": {
+        "ios": "7.0",
+        "osx": "10.8",
+        "watchos": "1.0",
+        "tvos": "9.0"
+      }
+    },
+    {
+      "name": "Swift",
+      "source_files": "Pod/Sources/Swift/**/*.swift",
+      "dependencies": {
+        "SGVSuperMessagingProxy/Swift": [
+          "~> 2.0"
+        ]
+      },
+      "platforms": {
+        "ios": "8.0",
+        "osx": "10.9",
+        "watchos": "2.0",
+        "tvos": "9.0"
+      }
+    }
+  ]
+}

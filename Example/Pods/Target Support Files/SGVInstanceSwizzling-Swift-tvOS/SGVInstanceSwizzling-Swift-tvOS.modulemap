@@ -1,0 +1,6 @@
+framework module SGVInstanceSwizzling {
+  umbrella header "SGVInstanceSwizzling-Swift-tvOS-umbrella.h"
+
+  export *
+  module * { export * }
+}

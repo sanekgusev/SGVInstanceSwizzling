@@ -1,0 +1,6 @@
+framework module SGVInstanceSwizzling {
+  umbrella header "SGVInstanceSwizzling-Objective-C-OSX-umbrella.h"
+
+  export *
+  module * { export * }
+}

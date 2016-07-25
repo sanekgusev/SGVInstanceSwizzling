@@ -1,11 +1,27 @@
-source 'https://github.com/CocoaPods/Specs.git'
+use_frameworks!
 
-target 'SGVInstanceSwizzling', :exclusive => true do
-  pod "SGVInstanceSwizzling", :path => "../"
+abstract_target 'ObjcTests' do
+  pod 'SGVInstanceSwizzling/Objective-C', :path => "../"
+  target 'OSXObjcTests' do
+      platform :osx, '10.8'
+  end
+  target 'iOSObjcTests' do
+      platform :ios, '7.0'
+  end
+  target 'tvOSObjcTests' do
+      platform :tvos, '9.0'
+  end
 end
 
-target 'Tests', :exclusive => true do
-  pod "SGVInstanceSwizzling", :path => "../"
-
-  
+abstract_target 'SwiftTests' do
+    pod 'SGVInstanceSwizzling/Swift', :path => "../"
+    target 'OSXSwiftTests' do
+        platform :osx, '10.9'
+    end
+    target 'iOSSwiftTests' do
+        platform :ios, '8.0'
+    end
+    target 'tvOSSwiftTests' do
+        platform :tvos, '9.0'
+    end
 end

@@ -1,16 +1,8 @@
-#
-# Be sure to run `pod lib lint SGVInstanceSwizzling.podspec' to ensure this is a
-# valid spec and remove all comments before submitting the spec.
-#
-# Any lines starting with a # are optional, but encouraged
-#
-# To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html
-#
-
 Pod::Spec.new do |s|
   s.name             = "SGVInstanceSwizzling"
   s.version          = "1.0.0"
-  s.summary          = "A short description of SGVInstanceSwizzling."
+  s.cocoapods_version = '>= 1.0.0'
+  s.summary          = "Override dynamically-dispatched methods on any Objective-C or Swift object with access to original implementation."
   s.description      = <<-DESC
                        An optional longer description of SGVInstanceSwizzling
 
@@ -18,17 +10,35 @@ Pod::Spec.new do |s|
                        * Don't worry about the indent, we strip it!
                        DESC
   s.homepage         = "https://github.com/sanekgusev/SGVInstanceSwizzling"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
   s.license          = 'MIT'
-  s.author           = { "Alexander Gusev" => "sanekgusev@gmail.com" }
+  s.author           = { "Aleksandr Gusev" => "sanekgusev@gmail.com" }
   s.source           = { :git => "https://github.com/sanekgusev/SGVInstanceSwizzling.git", :tag => s.version.to_s }
   s.social_media_url = 'https://twitter.com/sanekgusev'
 
-  s.platform     = :ios, '7.0'
-  s.requires_arc = true
+  s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.9'
+  s.watchos.deployment_target = '2.0'
+  s.tvos.deployment_target = '9.0'
 
-  s.source_files = 'Pod/Classes/**/*'
+  s.subspec 'Objective-C' do |ss|
+    ss.source_files = 'Pod/Sources/Objective-C/**/*.{h,m}'
+    ss.public_header_files = 'Pod/Sources/Objective-C/SGVInstanceSwizzling.h'
+    ss.dependency 'SGVSuperMessagingProxy/Objective-C', '~> 2.0'
 
-  s.public_header_files = 'Pod/Classes/SGVInstanceSwizzling.h'
-  s.dependency 'SGVSuperMessagingProxy', '~> 1.0'
+    ss.ios.deployment_target = '7.0'
+    ss.osx.deployment_target = '10.8'
+    ss.watchos.deployment_target = '1.0'
+    ss.tvos.deployment_target = '9.0'
+  end
+
+  s.subspec 'Swift' do |ss|
+    ss.source_files = 'Pod/Sources/Swift/**/*.swift'
+    ss.dependency 'SGVSuperMessagingProxy/Swift', '~> 2.0'
+
+    ss.ios.deployment_target = '8.0'
+    ss.osx.deployment_target = '10.9'
+    ss.watchos.deployment_target = '2.0'
+    ss.tvos.deployment_target = '9.0'
+  end
+
 end
