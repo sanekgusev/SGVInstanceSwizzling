@@ -9,20 +9,14 @@
 /* Begin PBXBuildFile section */
 		033D3F1D9CB006EFBE16B5F0 /* Pods_ObjcTests_tvOSObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 565F255B9C8A73B6B94B7A2E /* Pods_ObjcTests_tvOSObjcTests.framework */; };
 		170AB01B7FDA79BA46EAAC2E /* Pods_ObjcTests_OSXObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CBB00F7E3CA78C592C80A977 /* Pods_ObjcTests_OSXObjcTests.framework */; };
-		6D53E28A7B3C4B967CF954B5 /* Pods_InstanceSwizzlingSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE9A3201A74E40F90C2AB7FD /* Pods_InstanceSwizzlingSwiftTests.framework */; };
-		75E873DB8F3AEE9FF3C75AAC /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F28F01FB371C642D0E3F5AC /* Pods_InstanceSwizzlingObjcTests.framework */; };
 		937B28555CC7B3BE84782575 /* Pods_ObjcTests_iOSObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 018219FC998C83150F237076 /* Pods_ObjcTests_iOSObjcTests.framework */; };
 		9669E84D94E5F281FB3D61A2 /* Pods_SwiftTests_iOSSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8D66B455A98D473F31FFE548 /* Pods_SwiftTests_iOSSwiftTests.framework */; };
 		994EC4BDD2D94D21507602ED /* Pods_SwiftTests_OSXSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7FC4CDAA9C910C24C565AEED /* Pods_SwiftTests_OSXSwiftTests.framework */; };
 		BBADBB6F1D0CAADD006B82CA /* InstanceSwizzlingObjcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BBADBB6A1D0CAADD006B82CA /* InstanceSwizzlingObjcTests.m */; };
 		BBADBB711D0CAAE3006B82CA /* InstanceSwizzlingSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBADBB6B1D0CAADD006B82CA /* InstanceSwizzlingSwiftTests.swift */; };
 		BBCD127E1D467811006D3395 /* InstanceSwizzlingObjcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BBADBB6A1D0CAADD006B82CA /* InstanceSwizzlingObjcTests.m */; };
-		BBCD12801D467811006D3395 /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F28F01FB371C642D0E3F5AC /* Pods_InstanceSwizzlingObjcTests.framework */; };
 		BBCD128C1D467852006D3395 /* InstanceSwizzlingSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBADBB6B1D0CAADD006B82CA /* InstanceSwizzlingSwiftTests.swift */; };
-		BBCD128E1D467852006D3395 /* Pods_InstanceSwizzlingSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE9A3201A74E40F90C2AB7FD /* Pods_InstanceSwizzlingSwiftTests.framework */; };
 		BBCD129A1D468CF5006D3395 /* InstanceSwizzlingObjcTests.m in Sources */ = {isa = PBXBuildFile; fileRef = BBADBB6A1D0CAADD006B82CA /* InstanceSwizzlingObjcTests.m */; };
-		BBCD129C1D468CF5006D3395 /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F28F01FB371C642D0E3F5AC /* Pods_InstanceSwizzlingObjcTests.framework */; };
-		BBCD12AA1D468D48006D3395 /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F28F01FB371C642D0E3F5AC /* Pods_InstanceSwizzlingObjcTests.framework */; };
 		BBCD12B31D468D67006D3395 /* InstanceSwizzlingSwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBADBB6B1D0CAADD006B82CA /* InstanceSwizzlingSwiftTests.swift */; };
 		D36AE2660DF1D62F6210E6FC /* Pods_SwiftTests_tvOSSwiftTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFCB8A1A5BB3B05319850EC8 /* Pods_SwiftTests_tvOSSwiftTests.framework */; };
 /* End PBXBuildFile section */
@@ -74,7 +68,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				75E873DB8F3AEE9FF3C75AAC /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */,
 				170AB01B7FDA79BA46EAAC2E /* Pods_ObjcTests_OSXObjcTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -83,7 +76,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6D53E28A7B3C4B967CF954B5 /* Pods_InstanceSwizzlingSwiftTests.framework in Frameworks */,
 				994EC4BDD2D94D21507602ED /* Pods_SwiftTests_OSXSwiftTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -92,7 +84,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCD12801D467811006D3395 /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */,
 				937B28555CC7B3BE84782575 /* Pods_ObjcTests_iOSObjcTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -101,7 +92,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCD128E1D467852006D3395 /* Pods_InstanceSwizzlingSwiftTests.framework in Frameworks */,
 				9669E84D94E5F281FB3D61A2 /* Pods_SwiftTests_iOSSwiftTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -110,7 +100,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCD129C1D468CF5006D3395 /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */,
 				033D3F1D9CB006EFBE16B5F0 /* Pods_ObjcTests_tvOSObjcTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -119,7 +108,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BBCD12AA1D468D48006D3395 /* Pods_InstanceSwizzlingObjcTests.framework in Frameworks */,
 				D36AE2660DF1D62F6210E6FC /* Pods_SwiftTests_tvOSSwiftTests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

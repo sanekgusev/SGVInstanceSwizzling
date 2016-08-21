@@ -3,121 +3,90 @@
 import Foundation
 import SGVSuperMessagingProxy
 
-public protocol DynamicMethodReplaceable: class {}
+public protocol DynamicMethodOverrideable: class {}
 
-private var associatedObjectKey: Int = 0
+public enum DynamicMethodOverrideError: ErrorType {
+    case ClassAllocationFailure
+    case MethodLookupFailure
+    case ImplementationCreationFailure
+    case MethodAdditionFailure
+}
 
-public extension DynamicMethodReplaceable {
+public extension DynamicMethodOverrideable {
     
-    private static func generatedSubclassName(className: String) -> String {
-        return "sgv_\(className)_\(NSUUID())"
+    public func overrideDynamicMethod(selector selector: Selector,
+                                               @noescape implementationBlockProvider: (original: Self) -> AnyObject /* @convention(block) */) throws {
+        
+        guard let objectClass = object_getClass(self),
+            className = String.fromCString(class_getName(objectClass)),
+            subclass = objc_allocateClassPair(self.dynamicType, generatedSubclassName(className), 0) else {
+                throw DynamicMethodOverrideError.ClassAllocationFailure
+        }
+        
+        do {
+            try performMethodOverride(objectClass: objectClass,
+                                      subclass: subclass,
+                                      selector: selector,
+                                      implementationBlockProvider: implementationBlockProvider)
+        } catch let error as DynamicMethodOverrideError {
+            objc_disposeClassPair(subclass)
+            throw error
+        }
+        
+        objc_registerClassPair(subclass)
+        
+        object_setClass(self, subclass)
     }
     
-    private var undoers: ReplaceMethodUndoers {
+    public func undoLastMethodOverride() -> Bool {
+        return undoers.undoLastMethodOverride()
+    }
+    
+    public func undoAllMethodOverrides() -> Bool {
+        return undoers.undoAllMethodOverrides()
+    }
+    
+    private func performMethodOverride(objectClass objectClass: AnyClass,
+                                                   subclass: AnyClass,
+                                                   selector: Selector,
+                                                   @noescape implementationBlockProvider: (original: Self) -> AnyObject) throws {
+        let method = class_getInstanceMethod(self.dynamicType, selector)
+        guard method != nil,
+            let typeEncoding = String.fromCString(method_getTypeEncoding(method)) else {
+                throw DynamicMethodOverrideError.MethodLookupFailure
+        }
+        
+        let implementationBlock = implementationBlockProvider(original: unsafeBitCast(SuperMessagingProxy(object: self), Self.self))
+        let implementation = imp_implementationWithBlock(implementationBlock)
+        
+        guard implementation != nil else {
+            throw DynamicMethodOverrideError.ImplementationCreationFailure
+        }
+        
+        guard class_addMethod(subclass, selector, implementation, typeEncoding) else {
+            imp_removeBlock(implementation)
+            throw DynamicMethodOverrideError.MethodAdditionFailure
+        }
+        
+        undoers.appendUndoer(MethodOverrideUndoer(originalClass: objectClass, object: self, implementation: implementation))
+    }
+    
+    private var undoers: MethodOverrideUndoers {
         get {
-            if let undoers = objc_getAssociatedObject(self, &associatedObjectKey) as? ReplaceMethodUndoers {
+            if let undoers = objc_getAssociatedObject(self, &associatedObjectKey) as? MethodOverrideUndoers {
                 return undoers
             }
-            let undoers = ReplaceMethodUndoers()
-            self.undoers = undoers
+            self.undoers = MethodOverrideUndoers()
             return undoers
         }
         set {
             objc_setAssociatedObject(self, &associatedObjectKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
-    
-    public func replaceDynamicMethod(selector selector: Selector,
-                                              replacement: (original: Self) -> @convention(block) AnyObject -> Void) -> Bool {
-        
-        guard let objectClass = object_getClass(self),
-            className = String.fromCString(class_getName(objectClass)),
-            subclass = objc_allocateClassPair(self.dynamicType, self.dynamicType.generatedSubclassName(className), 0) else {
-                return false
-        }
-        do {
-            guard let typeEncoding = String.fromCString(method_getTypeEncoding(class_getInstanceMethod(self.dynamicType, selector))) else {
-                throw ClassCreationError()
-            }
-            
-            let implementationBlock = replacement(original: unsafeBitCast(SuperMessagingProxy(object: self), Self.self))
-            let implementation = imp_implementationWithBlock(unsafeBitCast(implementationBlock, AnyObject.self))
-            
-            guard class_addMethod(subclass, selector, implementation, typeEncoding) else {
-                throw ClassCreationError()
-            }
-            
-            objc_registerClassPair(subclass)
-            
-            object_setClass(self, subclass)
-            
-            undoers.array.append(ReplaceMethodUndoer(originalClass: objectClass, object: self))
-            
-            return true
-        }
-        catch _ {
-            objc_disposeClassPair(subclass)
-            return false
-        }
-    }
-    
-    public func undoLastMethodReplacement() -> Bool {
-        return undoers.undoLastMethodReplacement()
-    }
-    
-    public func undoAllMethodReplacements() -> Bool {
-        return undoers.undoAllMethodReplacements()
-    }
 }
 
-private struct ClassCreationError: ErrorType {}
+private var associatedObjectKey: Int = 0
 
-private class ReplaceMethodUndoer {
-    
-    let originalClass: AnyClass
-    
-    weak var object: AnyObject?
-    
-    init(originalClass: AnyClass, object: AnyObject) {
-        self.originalClass = originalClass
-        self.object = object
-    }
-    
-    deinit {
-        undoMethodReplace()
-    }
-    
-    func undoMethodReplace() {
-        guard let object = object,
-        objectClass = object_getClass(object) where class_getSuperclass(objectClass) == originalClass else {
-            return
-        }
-        
-        object_setClass(object, originalClass)
-        objc_disposeClassPair(objectClass)
-    }
-}
-
-private class ReplaceMethodUndoers {
-    var array: [ReplaceMethodUndoer] = []
-    
-    func undoLastMethodReplacement() -> Bool {
-        guard let undoer = array.popLast() else {
-            return false
-        }
-        undoer.undoMethodReplace()
-        return true
-    }
-    
-    func undoAllMethodReplacements() -> Bool {
-        if !undoLastMethodReplacement() {
-            return false
-        }
-        while undoLastMethodReplacement() {}
-        return true
-    }
-    
-    deinit {
-        undoAllMethodReplacements()
-    }
+private func generatedSubclassName(className: String) -> String {
+    return "sgv_\(className)_\(NSUUID().UUIDString)"
 }

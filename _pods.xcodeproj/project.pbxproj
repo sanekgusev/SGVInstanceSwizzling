@@ -103,12 +103,6 @@
 		B8AC7EC2C40A70647E1EF5258B9B050F /* SGVSuperMessagingProxy-Common-Objective-C-iOS-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 89174D11B04B3B89CC76232BEAC37987 /* SGVSuperMessagingProxy-Common-Objective-C-iOS-dummy.m */; };
 		B8DEE16461D7B90E004214F9365C053F /* SwiftTrampolines.c in Sources */ = {isa = PBXBuildFile; fileRef = 85F226908965519C3F9A153D21FA68FE /* SwiftTrampolines.c */; };
 		B97D5020B37DDCD9D905A1AC284C9749 /* SGVInstanceSwizzling-Swift-OSX-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E810D68F9C5B3AA8427B08D9A87F8B7F /* SGVInstanceSwizzling-Swift-OSX-dummy.m */; };
-		BBE09D4C1D6865F200535334 /* MethodOverrideUndoer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE09D4B1D6865F200535334 /* MethodOverrideUndoer.swift */; };
-		BBE09D4D1D6865F200535334 /* MethodOverrideUndoer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE09D4B1D6865F200535334 /* MethodOverrideUndoer.swift */; };
-		BBE09D4E1D6865F200535334 /* MethodOverrideUndoer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE09D4B1D6865F200535334 /* MethodOverrideUndoer.swift */; };
-		BBE09D501D68667500535334 /* MethodOverrideUndoers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE09D4F1D68667500535334 /* MethodOverrideUndoers.swift */; };
-		BBE09D511D68667500535334 /* MethodOverrideUndoers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE09D4F1D68667500535334 /* MethodOverrideUndoers.swift */; };
-		BBE09D521D68667500535334 /* MethodOverrideUndoers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BBE09D4F1D68667500535334 /* MethodOverrideUndoers.swift */; };
 		C021E92DE90345DB82993C3405E70C3C /* SGVInstanceSwizzling-Swift-tvOS-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 7CB154719C3F18D43D5109A3C763E046 /* SGVInstanceSwizzling-Swift-tvOS-dummy.m */; };
 		C1F43F0E35BAA7E164EAAFC238AE31E5 /* Pods-ObjcTests-OSXObjcTests-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 9446BF192B3657084673EB97165E98C1 /* Pods-ObjcTests-OSXObjcTests-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C30FCA3D84CFE03B70F6CE139538B1B2 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 43B56C7920A99B3EF2360A3404940186 /* Foundation.framework */; };
@@ -402,8 +396,6 @@
 		BA5AA6BC90EAE6B49E5AEDF2D2A07017 /* Pods-SwiftTests-tvOSSwiftTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-SwiftTests-tvOSSwiftTests.debug.xcconfig"; sourceTree = "<group>"; };
 		BAB564EFF6744DE053152FEE153628AB /* Pods-ObjcTests-iOSObjcTests-frameworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-ObjcTests-iOSObjcTests-frameworks.sh"; sourceTree = "<group>"; };
 		BB02E23FC67C8B638F88577F9BAF3A0F /* SGVInstanceSwizzling-Objective-C-OSX-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "SGVInstanceSwizzling-Objective-C-OSX-prefix.pch"; sourceTree = "<group>"; };
-		BBE09D4B1D6865F200535334 /* MethodOverrideUndoer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MethodOverrideUndoer.swift; sourceTree = "<group>"; };
-		BBE09D4F1D68667500535334 /* MethodOverrideUndoers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MethodOverrideUndoers.swift; sourceTree = "<group>"; };
 		BC64EA976C8337916B3C0327BCE2C8C3 /* SwiftTrampolines.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = SwiftTrampolines.h; path = Pod/Sources/Swift/SwiftTrampolines.h; sourceTree = "<group>"; };
 		BC6C952A5E5C502BB8DFA8393FF33F1F /* SGVInstanceSwizzlingUndoToken.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = SGVInstanceSwizzlingUndoToken.m; sourceTree = "<group>"; };
 		BC892062ED681D9D6AAD8875A9DA6397 /* SGVSuperMessagingProxy-Common-Objective-C-tvOS-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = "SGVSuperMessagingProxy-Common-Objective-C-tvOS-dummy.m"; path = "../SGVSuperMessagingProxy-Common-Objective-C-tvOS/SGVSuperMessagingProxy-Common-Objective-C-tvOS-dummy.m"; sourceTree = "<group>"; };
@@ -690,8 +682,6 @@
 			isa = PBXGroup;
 			children = (
 				6C4866CC39D3EC471110AF0F07076649 /* DynamicMethodReplaceable.swift */,
-				BBE09D4B1D6865F200535334 /* MethodOverrideUndoer.swift */,
-				BBE09D4F1D68667500535334 /* MethodOverrideUndoers.swift */,
 			);
 			path = Swift;
 			sourceTree = "<group>";
@@ -1589,9 +1579,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3BB89AB6EE0530C3940E1154DC3642B5 /* DynamicMethodReplaceable.swift in Sources */,
-				BBE09D4E1D6865F200535334 /* MethodOverrideUndoer.swift in Sources */,
 				C021E92DE90345DB82993C3405E70C3C /* SGVInstanceSwizzling-Swift-tvOS-dummy.m in Sources */,
-				BBE09D521D68667500535334 /* MethodOverrideUndoers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1631,9 +1619,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				498FDA5127226605B6247CE94B3A9B4E /* DynamicMethodReplaceable.swift in Sources */,
-				BBE09D4D1D6865F200535334 /* MethodOverrideUndoer.swift in Sources */,
 				B97D5020B37DDCD9D905A1AC284C9749 /* SGVInstanceSwizzling-Swift-OSX-dummy.m in Sources */,
-				BBE09D511D68667500535334 /* MethodOverrideUndoers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1661,9 +1647,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B6CCA8E491CB17EDED99B99B679EBCC2 /* DynamicMethodReplaceable.swift in Sources */,
-				BBE09D4C1D6865F200535334 /* MethodOverrideUndoer.swift in Sources */,
 				5CEC3682B60B222FFC26DECB0FDE979D /* SGVInstanceSwizzling-Swift-iOS-dummy.m in Sources */,
-				BBE09D501D68667500535334 /* MethodOverrideUndoers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
