@@ -19,38 +19,38 @@ public extension DynamicMethodOverrideable {
         
         guard let objectClass = object_getClass(self),
             className = String.fromCString(class_getName(objectClass)),
-            subclass = objc_allocateClassPair(self.dynamicType, generatedSubclassName(className), 0) else {
+            generatedSubclass = objc_allocateClassPair(objectClass, generatedSubclassName(className), 0) else {
                 throw DynamicMethodOverrideError.ClassAllocationFailure
         }
         
         do {
             try performMethodOverride(objectClass: objectClass,
-                                      subclass: subclass,
+                                      subclass: generatedSubclass,
                                       selector: selector,
                                       implementationBlockProvider: implementationBlockProvider)
         } catch let error as DynamicMethodOverrideError {
-            objc_disposeClassPair(subclass)
+            objc_disposeClassPair(generatedSubclass)
             throw error
         }
         
-        objc_registerClassPair(subclass)
+        objc_registerClassPair(generatedSubclass)
         
-        object_setClass(self, subclass)
+        object_setClass(self, generatedSubclass)
     }
     
     public func undoLastMethodOverride() -> Bool {
-        return undoers.undoLastMethodOverride()
+        return undoPerformer.undoLastMethodOverride()
     }
     
     public func undoAllMethodOverrides() -> Bool {
-        return undoers.undoAllMethodOverrides()
+        return undoPerformer.undoAllMethodOverrides()
     }
     
     private func performMethodOverride(objectClass objectClass: AnyClass,
-                                                   subclass: AnyClass,
+                                                   generatedSubclass: AnyClass,
                                                    selector: Selector,
                                                    @noescape implementationBlockProvider: (original: Self) -> AnyObject) throws {
-        let method = class_getInstanceMethod(self.dynamicType, selector)
+        let method = class_getInstanceMethod(objectClass, selector)
         guard method != nil,
             let typeEncoding = String.fromCString(method_getTypeEncoding(method)) else {
                 throw DynamicMethodOverrideError.MethodLookupFailure
@@ -63,29 +63,29 @@ public extension DynamicMethodOverrideable {
             throw DynamicMethodOverrideError.ImplementationCreationFailure
         }
         
-        guard class_addMethod(subclass, selector, implementation, typeEncoding) else {
+        guard class_addMethod(generatedSubclass, selector, implementation, typeEncoding) else {
             imp_removeBlock(implementation)
             throw DynamicMethodOverrideError.MethodAdditionFailure
         }
         
-        undoers.appendUndoer(MethodOverrideUndoer(originalClass: objectClass, object: self, implementation: implementation))
+        undoPerformer.pushUndoItemFor(originalClass: objectClass, object: self, implementation: implementation)
     }
     
-    private var undoers: MethodOverrideUndoers {
+    private var undoPerformer: MethodOverrideUndoPerformer {
         get {
-            if let undoers = objc_getAssociatedObject(self, &associatedObjectKey) as? MethodOverrideUndoers {
-                return undoers
+            if let undoPerformer = objc_getAssociatedObject(self, &methodOverrideUndoPerformerKey) as? MethodOverrideUndoPerformer {
+                return undoPerformer
             }
-            self.undoers = MethodOverrideUndoers()
-            return undoers
+            self.undoPerformer = MethodOverrideUndoPerformer()
+            return undoPerformer
         }
         set {
-            objc_setAssociatedObject(self, &associatedObjectKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+            objc_setAssociatedObject(self, &methodOverrideUndoPerformerKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         }
     }
 }
 
-private var associatedObjectKey: Int = 0
+private var methodOverrideUndoPerformerKey: Int = 0
 
 private func generatedSubclassName(className: String) -> String {
     return "sgv_\(className)_\(NSUUID().UUIDString)"
